@@ -1,7 +1,9 @@
-import { render } from "@testing-library/react-native";
+import { render, waitFor } from "@testing-library/react-native";
 import App from "../App";
 
-test("renders lotus shell", () => {
+test("renders lotus shell", async () => {
   const { getByText } = render(<App />);
-  expect(getByText("Lotus")).toBeTruthy();
+  await waitFor(() => {
+    expect(getByText("Lotus")).toBeTruthy();
+  });
 });
