@@ -1,5 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import type { SleepSession } from "../../domain/types";
+import { ListRow } from "../../ui/ListRow";
+import { SurfaceCard } from "../../ui/SurfaceCard";
+import { theme } from "../../theme/tokens";
 
 type TodayTimelineScreenProps = {
   sessions: SleepSession[];
@@ -10,15 +13,20 @@ export function TodayTimelineScreen({ sessions }: TodayTimelineScreenProps) {
 
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.title}>Today Timeline</Text>
-      {sorted.map((session) => (
-        <View key={session.id} testID="timeline-row" style={styles.row}>
-          <Text style={styles.rowTitle}>{session.id}</Text>
-          <Text style={styles.rowMeta}>
-            {session.startAt} - {session.endAt}
-          </Text>
+      <Text style={styles.title}>Today rhythm</Text>
+      <SurfaceCard>
+        <View style={styles.list}>
+          {sorted.map((session) => (
+            <View key={session.id} testID="timeline-row">
+              <ListRow
+                title={session.id}
+                subtitle={`${session.startAt} - ${session.endAt}`}
+                onPress={() => undefined}
+              />
+            </View>
+          ))}
         </View>
-      ))}
+      </SurfaceCard>
     </View>
   );
 }
@@ -26,24 +34,15 @@ export function TodayTimelineScreen({ sessions }: TodayTimelineScreenProps) {
 const styles = StyleSheet.create({
   wrapper: {
     width: "100%",
-    gap: 8
+    gap: theme.spacing.sm
   },
   title: {
-    color: "#0f172a",
-    fontSize: 18,
-    fontWeight: "700"
+    color: theme.colors.ink.strong,
+    fontFamily: theme.type.family.body,
+    fontSize: theme.type.size.h2,
+    fontWeight: theme.type.weight.bold
   },
-  row: {
-    borderRadius: 12,
-    backgroundColor: "#e2e8f0",
-    padding: 10
-  },
-  rowTitle: {
-    fontWeight: "700",
-    color: "#1f2937"
-  },
-  rowMeta: {
-    color: "#334155",
-    fontSize: 12
+  list: {
+    gap: theme.spacing.sm
   }
 });

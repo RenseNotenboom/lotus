@@ -2,7 +2,7 @@ import { render } from "@testing-library/react-native";
 import { TodayTimelineScreen } from "../../../src/features/timeline/TodayTimelineScreen";
 
 test("renders timeline sessions in order", () => {
-  const { getAllByTestId } = render(
+  const { getAllByTestId, getAllByText, getByText } = render(
     <TodayTimelineScreen
       sessions={[
         {
@@ -25,7 +25,9 @@ test("renders timeline sessions in order", () => {
     />
   );
 
+  expect(getByText("Today rhythm")).toBeTruthy();
   const rows = getAllByTestId("timeline-row");
   expect(rows).toHaveLength(2);
-  expect(rows[0].props.children[0].props.children).toContain("early");
+  const titles = getAllByText(/^(early|late)$/).map((node) => node.props.children);
+  expect(titles[0]).toBe("early");
 });

@@ -23,6 +23,7 @@ const sessions: SleepSession[] = [
 test("calculates total sleep minutes for day", () => {
   const summary = buildDailySummary(sessions, "2026-02-21");
   expect(summary.totalMinutes).toBe(105);
+  expect(summary.averageNapMinutes).toBe(53);
 });
 
 test("returns sessions in chronological order", () => {
