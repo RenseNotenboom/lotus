@@ -1,55 +1,80 @@
 import { useMemo, useState } from "react";
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import { createSuggestionEngine } from "../suggestions/SuggestionEngine";
-import { RecommendationCard } from "./RecommendationCard";
-import { QuickActions } from "./QuickActions";
-import { useSleepTimer } from "../sleepTimer/useSleepTimer";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { AppHeader } from "../../ui/AppHeader";
 import { theme } from "../../theme/tokens";
+import { useSleepTimer } from "../sleepTimer/useSleepTimer";
+import { createSuggestionEngine } from "../suggestions/SuggestionEngine";
+import { buildDashboardHeroModel } from "./presenter";
+import { HeroNapPanel } from "./HeroNapPanel";
+import { TodayStatsChips } from "./TodayStatsChips";
+import { RecommendationCard } from "./RecommendationCard";
+import { RecentActivityPreview } from "./RecentActivityPreview";
+import { QuickActions } from "./QuickActions";
 
 const engine = createSuggestionEngine();
+
+const recentEntries = [
+  { id: "r1", title: "Nap 1", subtitle: "09:10-10:00" },
+  { id: "r2", title: "Nap 2", subtitle: "12:20-13:05" },
+  { id: "r3", title: "Nap 3", subtitle: "15:15-15:55" }
+];
 
 export function DashboardScreen() {
   const { state, start, stop } = useSleepTimer();
   const [message, setMessage] = useState("");
 
+  const nowIso = new Date().toISOString();
   const recommendation = useMemo(
     () =>
       engine.getRecommendation({
         dateOfBirth: "2025-11-12",
-        nowIso: new Date().toISOString(),
+        nowIso,
         recentWakeToNapMinutes: [88, 94, 86, 90],
         recentNapDurationMinutes: [58, 62, 64, 59]
       }),
-    []
+    [nowIso]
   );
 
+  const recommendedNapStartAtIso = new Date(
+    Date.now() + recommendation.recommendedNapStartInMin * 60000
+  ).toISOString();
+
+  const heroModel = buildDashboardHeroModel({
+    nowIso,
+    isRunning: state.isRunning,
+    activeSessionStartAtIso: state.activeSessionStartAt ?? undefined,
+    recommendedNapStartAtIso
+  });
+
   const onToggleTimer = async () => {
-    const nowIso = new Date().toISOString();
+    const tickIso = new Date().toISOString();
     if (state.isRunning) {
-      await stop(nowIso);
+      await stop(tickIso);
       setMessage("Sleep session saved.");
       return;
     }
 
-    await start(nowIso);
+    await start(tickIso);
     setMessage("Sleep timer started.");
   };
 
   return (
     <SafeAreaView style={styles.screen}>
-      <View style={styles.hero}>
-        <Text style={styles.brand}>Lotus</Text>
-        <Text style={styles.subtitle}>Sleep flow for tiny humans</Text>
-      </View>
+      <AppHeader title="Lotus" subtitle="Sleep flow for tiny humans" />
 
-      <Pressable accessibilityRole="button" onPress={onToggleTimer} style={styles.timerButton}>
-        <Text style={styles.timerLabel}>{state.isRunning ? "Stop Sleep" : "Start Sleep"}</Text>
-      </Pressable>
+      <HeroNapPanel model={heroModel} onPrimaryAction={onToggleTimer} />
+
+      <TodayStatsChips totalToday="4h 20m" naps="3" lastNap="40m" />
 
       <RecommendationCard
         startInMinutes={recommendation.recommendedNapStartInMin}
         durationMinutes={recommendation.estimatedDurationMin}
         rationale={recommendation.rationale}
+      />
+
+      <RecentActivityPreview
+        items={recentEntries}
+        onSelect={(id) => setMessage(`Edit opened for ${id}.`)}
       />
 
       <QuickActions
@@ -65,36 +90,14 @@ export function DashboardScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 20,
-    gap: 14,
-    backgroundColor: theme.colors.bg
-  },
-  hero: {
-    marginBottom: 4
-  },
-  brand: {
-    fontSize: 34,
-    fontFamily: "Georgia",
-    color: theme.colors.ink
-  },
-  subtitle: {
-    color: theme.colors.muted,
-    fontSize: 14
-  },
-  timerButton: {
-    backgroundColor: theme.colors.action,
-    borderRadius: theme.radius.lg,
-    paddingVertical: 18,
-    alignItems: "center"
-  },
-  timerLabel: {
-    color: "#ffffff",
-    fontWeight: "700",
-    fontSize: 20
+    paddingHorizontal: theme.spacing.lg,
+    paddingTop: theme.spacing.lg,
+    gap: theme.spacing.md,
+    backgroundColor: theme.colors.bg.base
   },
   message: {
-    color: theme.colors.accentCool,
-    fontWeight: "600"
+    color: theme.colors.ink.muted,
+    fontFamily: theme.type.family.body,
+    fontSize: theme.type.size.small
   }
 });

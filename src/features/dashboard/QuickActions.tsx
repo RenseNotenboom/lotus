@@ -1,4 +1,6 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { PrimaryAction } from "../../ui/PrimaryAction";
+import { theme } from "../../theme/tokens";
 
 type QuickActionsProps = {
   onManualAdd(): void;
@@ -8,12 +10,12 @@ type QuickActionsProps = {
 export function QuickActions({ onManualAdd, onEditLast }: QuickActionsProps) {
   return (
     <View style={styles.row}>
-      <Pressable accessibilityRole="button" onPress={onManualAdd} style={[styles.button, styles.warmButton]}>
-        <Text style={styles.buttonText}>Add Manual Sleep</Text>
-      </Pressable>
-      <Pressable accessibilityRole="button" onPress={onEditLast} style={[styles.button, styles.coolButton]}>
-        <Text style={styles.buttonText}>Edit Last Entry</Text>
-      </Pressable>
+      <View style={styles.item}>
+        <PrimaryAction label="Add Manual Sleep" onPress={onManualAdd} />
+      </View>
+      <View style={styles.item}>
+        <PrimaryAction label="Edit Last Entry" onPress={onEditLast} />
+      </View>
     </View>
   );
 }
@@ -22,23 +24,9 @@ const styles = StyleSheet.create({
   row: {
     width: "100%",
     flexDirection: "row",
-    gap: 10
+    gap: theme.spacing.sm
   },
-  button: {
-    flex: 1,
-    borderRadius: 14,
-    alignItems: "center",
-    paddingVertical: 12
-  },
-  warmButton: {
-    backgroundColor: "#d97706"
-  },
-  coolButton: {
-    backgroundColor: "#334155"
-  },
-  buttonText: {
-    color: "#ffffff",
-    fontWeight: "700",
-    fontSize: 13
+  item: {
+    flex: 1
   }
 });

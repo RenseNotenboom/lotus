@@ -1,4 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
+import { SurfaceCard } from "../../ui/SurfaceCard";
+import { theme } from "../../theme/tokens";
 
 type RecommendationCardProps = {
   startInMinutes: number;
@@ -8,39 +10,35 @@ type RecommendationCardProps = {
 
 export function RecommendationCard({ startInMinutes, durationMinutes, rationale }: RecommendationCardProps) {
   return (
-    <View style={styles.card}>
-      <Text style={styles.heading}>Next Nap Signal</Text>
-      <Text style={styles.metric}>Best nap start: in ~{startInMinutes} min</Text>
-      <Text style={styles.metric}>Expected length: ~{durationMinutes} min</Text>
-      <Text style={styles.rationale}>{rationale}</Text>
-    </View>
+    <SurfaceCard>
+      <View style={styles.wrap}>
+        <Text style={styles.heading}>Nap rationale</Text>
+        <Text style={styles.metric}>Best nap start: in ~{startInMinutes} min</Text>
+        <Text style={styles.metric}>Expected length: ~{durationMinutes} min</Text>
+        <Text style={styles.rationale}>{rationale}</Text>
+      </View>
+    </SurfaceCard>
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
-    width: "100%",
-    borderRadius: 20,
-    padding: 16,
-    backgroundColor: "#f7efe0",
-    borderWidth: 1,
-    borderColor: "#e7d2aa"
+  wrap: {
+    gap: theme.spacing.sm
   },
   heading: {
-    fontSize: 12,
+    fontFamily: theme.type.family.ui,
+    fontSize: theme.type.size.small,
+    color: theme.colors.ink.muted,
     textTransform: "uppercase",
-    letterSpacing: 1.2,
-    color: "#8b5e1a",
-    fontFamily: "Georgia",
-    marginBottom: 8
+    letterSpacing: 0.8
   },
   metric: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#1f2937"
+    fontSize: theme.type.size.body,
+    fontWeight: theme.type.weight.bold,
+    color: theme.colors.ink.strong
   },
   rationale: {
-    marginTop: 10,
-    color: "#475569"
+    color: theme.colors.ink.muted,
+    fontSize: theme.type.size.small
   }
 });
