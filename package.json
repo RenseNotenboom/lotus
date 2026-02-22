@@ -38,7 +38,7 @@
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/.expo/",
-      "/.worktrees/"
+      "<rootDir>/.worktrees/"
     ]
   }
 }
