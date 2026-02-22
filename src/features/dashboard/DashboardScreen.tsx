@@ -4,6 +4,7 @@ import { createSuggestionEngine } from "../suggestions/SuggestionEngine";
 import { RecommendationCard } from "./RecommendationCard";
 import { QuickActions } from "./QuickActions";
 import { useSleepTimer } from "../sleepTimer/useSleepTimer";
+import { theme } from "../../theme/tokens";
 
 const engine = createSuggestionEngine();
 
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 20,
     gap: 14,
-    backgroundColor: "#f3f5f7"
+    backgroundColor: theme.colors.bg
   },
   hero: {
     marginBottom: 4
@@ -75,15 +76,15 @@ const styles = StyleSheet.create({
   brand: {
     fontSize: 34,
     fontFamily: "Georgia",
-    color: "#0f172a"
+    color: theme.colors.ink
   },
   subtitle: {
-    color: "#475569",
+    color: theme.colors.muted,
     fontSize: 14
   },
   timerButton: {
-    backgroundColor: "#0f172a",
-    borderRadius: 18,
+    backgroundColor: theme.colors.action,
+    borderRadius: theme.radius.lg,
     paddingVertical: 18,
     alignItems: "center"
   },
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
     fontSize: 20
   },
   message: {
-    color: "#334155",
+    color: theme.colors.accentCool,
     fontWeight: "600"
   }
 });
