@@ -12,6 +12,7 @@ type RecommendationInput = {
 type RecommendationOutput = {
   recommendedNapStartInMin: number;
   estimatedDurationMin: number;
+  overtiredRiskOffsetInMin: number;
   rationale: string;
 };
 
@@ -41,6 +42,7 @@ export function createSuggestionEngine(): SuggestionEngine {
 
       return {
         ...adjusted,
+        overtiredRiskOffsetInMin: 20,
         rationale: `${baseline.rationale} Personalized using recent naps.`
       };
     }
