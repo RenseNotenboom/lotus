@@ -7,9 +7,14 @@ export type DashboardHeroInput = {
 
 export type DashboardHeroModel = {
   mode: "active" | "idle";
-  primaryLabel: "Start Nap" | "Stop Nap";
+  primaryLabel: "Start Nap Now" | "Stop Nap";
+  secondaryLabel?: "Set Reminder";
   mainText: string;
   subText: string;
+  recommendedTimeLabel?: string;
+  countdownLabel?: string;
+  confidenceLabel?: "High confidence" | "Medium confidence" | "Low confidence";
+  reason?: string;
 };
 
 function parseIso(iso: string): Date {
@@ -40,6 +45,17 @@ export function formatClockLabel(iso: string): string {
   return `${pad2(date.getUTCHours())}:${pad2(date.getUTCMinutes())}`;
 }
 
+function toConfidence(deltaMinutes: number): DashboardHeroModel["confidenceLabel"] {
+  const absoluteDelta = Math.abs(deltaMinutes);
+  if (absoluteDelta <= 30) {
+    return "High confidence";
+  }
+  if (absoluteDelta <= 90) {
+    return "Medium confidence";
+  }
+  return "Low confidence";
+}
+
 export function buildDashboardHeroModel(input: DashboardHeroInput): DashboardHeroModel {
   const now = parseIso(input.nowIso).getTime();
 
@@ -55,11 +71,18 @@ export function buildDashboardHeroModel(input: DashboardHeroInput): DashboardHer
 
   const recommended = parseIso(input.recommendedNapStartAtIso).getTime();
   const delta = Math.round((recommended - now) / 60000);
+  const recommendedTimeLabel = formatClockLabel(input.recommendedNapStartAtIso);
+  const countdownLabel = formatRelativeMinutes(delta);
 
   return {
     mode: "idle",
-    primaryLabel: "Start Nap",
-    mainText: `Recommended next nap ${formatRelativeMinutes(delta)}`,
-    subText: `Suggested time ${formatClockLabel(input.recommendedNapStartAtIso)}`
+    primaryLabel: "Start Nap Now",
+    secondaryLabel: "Set Reminder",
+    mainText: `Recommended next nap ${countdownLabel}`,
+    subText: `Suggested time ${recommendedTimeLabel}`,
+    recommendedTimeLabel,
+    countdownLabel,
+    confidenceLabel: toConfidence(delta),
+    reason: "Based on age baseline and your recent naps."
   };
 }

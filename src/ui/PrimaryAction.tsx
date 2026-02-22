@@ -5,9 +5,10 @@ type PrimaryActionProps = {
   label: string;
   onPress(): void;
   disabled?: boolean;
+  tone?: "primary" | "secondary";
 };
 
-export function PrimaryAction({ label, onPress, disabled = false }: PrimaryActionProps) {
+export function PrimaryAction({ label, onPress, disabled = false, tone = "primary" }: PrimaryActionProps) {
   const handlePress = () => {
     if (disabled) {
       return;
@@ -21,9 +22,12 @@ export function PrimaryAction({ label, onPress, disabled = false }: PrimaryActio
       accessibilityLabel={label}
       disabled={disabled}
       onPress={handlePress}
-      style={[styles.button, disabled ? styles.disabled : styles.active]}
+      style={[
+        styles.button,
+        disabled ? styles.disabled : tone === "secondary" ? styles.secondary : styles.active
+      ]}
     >
-      <Text style={styles.label}>{label}</Text>
+      <Text style={[styles.label, tone === "secondary" ? styles.secondaryLabel : undefined]}>{label}</Text>
     </Pressable>
   );
 }
@@ -39,6 +43,9 @@ const styles = StyleSheet.create({
   active: {
     backgroundColor: theme.colors.state.action
   },
+  secondary: {
+    backgroundColor: theme.colors.surface.subtle
+  },
   disabled: {
     backgroundColor: theme.colors.surface.border
   },
@@ -47,5 +54,8 @@ const styles = StyleSheet.create({
     fontFamily: theme.type.family.ui,
     fontSize: theme.type.size.h2,
     fontWeight: theme.type.weight.bold
+  },
+  secondaryLabel: {
+    color: theme.colors.ink.default
   }
 });

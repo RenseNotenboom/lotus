@@ -51,3 +51,28 @@ test("reschedule clears prior reminders", async () => {
   expect(scheduled.has("nap-window-open")).toBe(true);
   expect(scheduled.has("overtired-risk")).toBe(true);
 });
+
+test("prediction reminder schedules at recommended nap time and replaces prior reminder", async () => {
+  const scheduled: Record<string, { atIso: string; body: string }> = {};
+  const service = createNotificationService({
+    async schedule(id, atIso, body) {
+      scheduled[id] = { atIso, body };
+    },
+    async cancel(id) {
+      delete scheduled[id];
+    }
+  });
+
+  await service.schedulePredictionReminder({
+    recommendedNapStartAtIso: "2026-02-21T14:00:00.000Z"
+  });
+
+  expect(scheduled["prediction-next-nap"]).toBeTruthy();
+  expect(scheduled["prediction-next-nap"].atIso).toBe("2026-02-21T14:00:00.000Z");
+
+  await service.schedulePredictionReminder({
+    recommendedNapStartAtIso: "2026-02-21T14:25:00.000Z"
+  });
+
+  expect(scheduled["prediction-next-nap"].atIso).toBe("2026-02-21T14:25:00.000Z");
+});

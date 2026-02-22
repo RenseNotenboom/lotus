@@ -5,5 +5,7 @@ test("renders lotus shell", async () => {
   const { getByText } = render(<App />);
   await waitFor(() => {
     expect(getByText("Lotus")).toBeTruthy();
+    expect(getByText("Recommended next nap")).toBeTruthy();
+    expect(getByText("Start Nap Now")).toBeTruthy();
   });
 });
