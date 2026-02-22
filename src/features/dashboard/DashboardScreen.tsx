@@ -1,15 +1,16 @@
 import { useMemo, useState } from "react";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { AppHeader } from "../../ui/AppHeader";
 import { theme } from "../../theme/tokens";
 import { useSleepTimer } from "../sleepTimer/useSleepTimer";
 import { createSuggestionEngine } from "../suggestions/SuggestionEngine";
-import { buildDashboardHeroModel } from "./presenter";
 import { HeroNapPanel } from "./HeroNapPanel";
-import { TodayStatsChips } from "./TodayStatsChips";
-import { RecommendationCard } from "./RecommendationCard";
-import { RecentActivityPreview } from "./RecentActivityPreview";
 import { QuickActions } from "./QuickActions";
+import { RecentActivityPreview } from "./RecentActivityPreview";
+import { RecommendationCard } from "./RecommendationCard";
+import { TodayStatsChips } from "./TodayStatsChips";
+import { buildDashboardHeroModel } from "./presenter";
 
 const engine = createSuggestionEngine();
 
