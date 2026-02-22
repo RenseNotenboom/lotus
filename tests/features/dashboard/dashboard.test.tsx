@@ -18,8 +18,11 @@ function renderDashboard() {
 test("renders idle hero with recommendation and dashboard modules", () => {
   const { getByRole, getByText, getAllByTestId, getAllByText } = renderDashboard();
 
-  expect(getByRole("button", { name: "Start Nap" })).toBeTruthy();
+  expect(getByRole("button", { name: "Start Nap Now" })).toBeTruthy();
+  expect(getByRole("button", { name: "Set Reminder" })).toBeTruthy();
   expect(getAllByText(/Recommended next nap/i).length).toBeGreaterThan(0);
+  expect(getByText(/confidence/i)).toBeTruthy();
+  expect(getByText(/Based on age baseline and your recent naps/i)).toBeTruthy();
   expect(getByText("Total today")).toBeTruthy();
   expect(getByText("Naps")).toBeTruthy();
   expect(getByText("Last nap")).toBeTruthy();
@@ -41,7 +44,7 @@ test("quick actions update helper message", () => {
 test("core log flow", async () => {
   const { getByRole, getByText } = renderDashboard();
 
-  fireEvent.press(getByRole("button", { name: "Start Nap" }));
+  fireEvent.press(getByRole("button", { name: "Start Nap Now" }));
   await waitFor(() => {
     expect(getByRole("button", { name: "Stop Nap" })).toBeTruthy();
     expect(getByText(/Current nap:/i)).toBeTruthy();

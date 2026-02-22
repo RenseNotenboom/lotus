@@ -4,9 +4,10 @@ Lotus is a mobile-first sleep tracker for newborns and babies (0-12 months), des
 
 ## MVP Features
 
-- Stateful nap hero on dashboard:
-  - Active nap shows live duration and `Stop Nap`
-  - Idle state shows `Recommended next nap` and `Start Nap`
+- Prediction-first dashboard hero:
+  - Idle state shows `Recommended next nap`, confidence, rationale, and `Start Nap Now`
+  - Secondary idle CTA `Set Reminder` schedules one reminder at the recommended start time
+  - Active nap shows live duration and `Stop Nap` with reminder CTA suppressed
 - Today at-a-glance chips (`Total today`, `Naps`, `Last nap`)
 - Recent activity preview with quick edit entry points
 - Manual sleep entry with validation and overlap guard

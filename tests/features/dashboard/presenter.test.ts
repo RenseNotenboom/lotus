@@ -14,6 +14,7 @@ test("builds active hero model", () => {
 
   expect(model.mode).toBe("active");
   expect(model.primaryLabel).toBe("Stop Nap");
+  expect(model.secondaryLabel).toBeUndefined();
   expect(model.mainText).toContain("00:45:00");
 });
 
@@ -25,8 +26,13 @@ test("builds idle hero model with recommendation", () => {
   });
 
   expect(model.mode).toBe("idle");
-  expect(model.primaryLabel).toBe("Start Nap");
+  expect(model.primaryLabel).toBe("Start Nap Now");
+  expect(model.secondaryLabel).toBe("Set Reminder");
   expect(model.mainText).toContain("in 25 min");
+  expect(model.recommendedTimeLabel).toBe("12:25");
+  expect(model.countdownLabel).toBe("in 25 min");
+  expect(model.confidenceLabel).toBe("High confidence");
+  expect(model.reason).toBe("Based on age baseline and your recent naps.");
 });
 
 test("formats relative minutes and clock labels", () => {

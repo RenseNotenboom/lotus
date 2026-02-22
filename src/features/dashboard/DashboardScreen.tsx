@@ -3,16 +3,24 @@ import { StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AppHeader } from "../../ui/AppHeader";
 import { theme } from "../../theme/tokens";
+import { createNotificationService } from "../notifications/notificationService";
 import { useSleepTimer } from "../sleepTimer/useSleepTimer";
 import { createSuggestionEngine } from "../suggestions/SuggestionEngine";
-import { HeroNapPanel } from "./HeroNapPanel";
+import { PredictionHero } from "./PredictionHero";
 import { QuickActions } from "./QuickActions";
 import { RecentActivityPreview } from "./RecentActivityPreview";
-import { RecommendationCard } from "./RecommendationCard";
 import { TodayStatsChips } from "./TodayStatsChips";
 import { buildDashboardHeroModel } from "./presenter";
 
 const engine = createSuggestionEngine();
+const notificationService = createNotificationService({
+  async schedule() {
+    return undefined;
+  },
+  async cancel() {
+    return undefined;
+  }
+});
 
 const recentEntries = [
   { id: "r1", title: "Nap 1", subtitle: "09:10-10:00" },
@@ -59,19 +67,27 @@ export function DashboardScreen() {
     setMessage("Sleep timer started.");
   };
 
+  const onSetReminder = async () => {
+    if (!heroModel.recommendedTimeLabel) {
+      return;
+    }
+    await notificationService.schedulePredictionReminder({
+      recommendedNapStartAtIso
+    });
+    setMessage(`Reminder set for ${heroModel.recommendedTimeLabel}.`);
+  };
+
   return (
     <SafeAreaView style={styles.screen}>
       <AppHeader title="Lotus" subtitle="Sleep flow for tiny humans" />
 
-      <HeroNapPanel model={heroModel} onPrimaryAction={onToggleTimer} />
+      <PredictionHero
+        model={heroModel}
+        onPrimaryAction={onToggleTimer}
+        onSecondaryAction={onSetReminder}
+      />
 
       <TodayStatsChips totalToday="4h 20m" naps="3" lastNap="40m" />
-
-      <RecommendationCard
-        startInMinutes={recommendation.recommendedNapStartInMin}
-        durationMinutes={recommendation.estimatedDurationMin}
-        rationale={recommendation.rationale}
-      />
 
       <RecentActivityPreview
         items={recentEntries}
